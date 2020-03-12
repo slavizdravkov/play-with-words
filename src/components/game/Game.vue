@@ -1,5 +1,5 @@
 <template>
-    <div class="col-4">
+    <div class="col-6">
         <div class="card">
             <div class="card-header border-primary">
                 {{ player.name }}
@@ -65,7 +65,29 @@
                 this.syllable = 0;
             },
             calcPoints() {
-                return 120;
+                let pointsByChar = {
+                    20:['а', 'т', 'н', 'в', 'и', 'о', 'р', 'е', 'л', 'с'],
+                    30:['м', 'б', 'г', 'п', 'д', 'к'],
+                    40:['з', 'у', 'ъ', 'ц', 'ч', 'я'],
+                    50:['ж', 'ш', 'щ', 'ф', 'й', 'х', 'ь', 'ю'],
+                };
+                let score = 0;
+
+                for (let i = 0; i < this.word.length; i++) {
+                    for (let key in pointsByChar) {
+                        let characters = pointsByChar[key];
+
+                        if (characters.indexOf(this.word[i].toLowerCase()) >= 0) {
+                            score += parseInt(key);
+                        }
+                    }
+                }
+
+                if (parseInt(this.syllable) >= 0) {
+                    score += parseInt(this.syllable) * 10;
+                }
+
+                return score;
             }
         },
     }
