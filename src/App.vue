@@ -15,5 +15,6 @@
 </script>
 
 <style lang="scss">
-  @import "~bootstrap/scss/bootstrap.scss";
+    @import '~vuejs-noty/dist/vuejs-noty.css';
+    @import "~bootstrap/scss/bootstrap.scss";
 </style>

@@ -55,6 +55,16 @@
         },
         methods: {
             calc() {
+                if (!this.word || this.syllable === 0) {
+                    this.$noty.error('Няма въведена дума или сричка!!!');
+                    return;
+                }
+                
+                if (this.word.match(/[a-zA-Z]/g)) {
+                    this.$noty.error('Думата съдържа латинска буква(и)!!!');
+                    return;
+                }
+
                 let points = this.calcPoints();
 
                 this.playerAnswers.push({
@@ -91,7 +101,7 @@
 
                 return score;
             }
-        },
+        }
     }
 </script>
 
