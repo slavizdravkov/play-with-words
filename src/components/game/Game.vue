@@ -1,19 +1,21 @@
 <template>
-    <div class="col-6">
+    <div class="col-4 mb-3">
         <div class="card">
             <div class="card-header border-primary">
                 {{ player.name }}
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-7 form-group">
-                        <input type="text" class="form-control" placeholder="Дума" v-model="word">
+                <div class="d-flex">
+                    <div class="flex-grow-1 form-group">
+                        <input type="text" class="form-control" placeholder="Дума" v-model="word" title="Дума">
                     </div>
-                    <div class="col-2 form-group">
-                        <input type="text" class="form-control" placeholder="Срички" v-model="syllable">
+                    <div class="w-25 form-group ml-2 mr-2">
+                        <input type="text" class="form-control" placeholder="Срички" v-model="syllable" title="Срички">
                     </div>
-                    <div class="col-3 form-group">
-                        <button type="button" class="btn btn-primary" @click="calc">Пресметни</button>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary" @click="calc" title="Пресметни">
+                            <font-awesome-icon icon="calculator"></font-awesome-icon>
+                        </button>
                     </div>
                 </div><!-- /.row -->
 
