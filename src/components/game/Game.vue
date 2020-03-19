@@ -1,8 +1,15 @@
 <template>
-    <div class="col-4 mb-3">
+    <div class="col-12 col-sm-4 mb-3">
         <div class="card">
             <div class="card-header border-primary">
-                {{ player.name }}
+                <div class="float-left">
+                    {{ player.name }}
+                </div>
+                <div class="float-right">
+                    <button type="button" class="btn btn-link btn-sm" title="Изтрий" @click="removePlayer(player.id)">
+                        <font-awesome-icon icon="times"></font-awesome-icon>
+                    </button>
+                </div>
             </div>
             <div class="card-body">
                 <div class="d-flex">
@@ -17,19 +24,40 @@
                             <font-awesome-icon icon="calculator"></font-awesome-icon>
                         </button>
                     </div>
-                </div><!-- /.row -->
+                </div><!-- /.d-flex -->
 
-                <table class="table table-bordered table-sm">
+                <div class="d-flex">
+                    <div class="pr-1 flex-fill">
+                        <button type="button" class="btn btn-primary" @click="playerError('изтекло време')">Изтекло време</button>
+                    </div>
+                    <div class="pr-1 flex-fill">
+                        <button type="button" class="btn btn-primary" @click="playerError('грешна дума')">Грешна дума</button>
+                    </div>
+                    <div class="pr-1 flex-fill">
+                        <button type="button" class="btn btn-primary" @click="languageTreasure">Езиково съкровище</button>
+                    </div>
+                    <div class="pr-1 flex-fill">
+                        <button type="button" class="btn btn-primary h-100" @click="spelling">Правопис</button>
+                    </div>
+                </div><!-- /.d-flex -->
+
+                <table class="table table-bordered table-sm mt-2">
                     <thead class="thead-light">
                     <tr>
                         <th class="text-center">Дума</th>
                         <th class="text-center">Точки</th>
+                        <th class="text-center">...</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="playerAnswer in playerAnswers" :key="playerAnswer.word">
+                    <tr v-for="(playerAnswer, index) in playerAnswers" :key="index">
                         <td>{{ playerAnswer.word }}</td>
                         <td class="text-right">{{ playerAnswer.points }} точки</td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-link btn-sm" title="Изтрий" @click="removeAnswer(index)">
+                                <font-awesome-icon icon="times"></font-awesome-icon>
+                            </button>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -49,32 +77,18 @@
             return {
                 playerAnswers: [],
                 word: '',
-                syllable: 0,
+                syllable: '',
                 totalScore: 0
             }
         },
         methods: {
             calc() {
-                if (!this.word || this.syllable === 0) {
-                    this.$noty.error('Няма въведена дума или сричка!!!');
-                    return;
+                if (this.hasValidData()) {
+                    this.addAnswer(this.word, this.calcPoints());
+
+                    this.word = '';
+                    this.syllable = 0;
                 }
-                
-                if (this.word.match(/[a-zA-Z]/g)) {
-                    this.$noty.error('Думата съдържа латинска буква(и)!!!');
-                    return;
-                }
-
-                let points = this.calcPoints();
-
-                this.playerAnswers.push({
-                    word: this.word,
-                    points: points
-                });
-
-                this.totalScore += points;
-                this.word = '';
-                this.syllable = 0;
             },
             calcPoints() {
                 let pointsByChar = {
@@ -100,6 +114,48 @@
                 }
 
                 return score;
+            },
+            hasValidData() {
+                if (!this.word || this.syllable === 0) {
+                    this.$noty.error('Няма въведена дума или сричка!!!');
+                    return false;
+                }
+
+                if (this.word.match(/[a-zA-Z]/g)) {
+                    this.$noty.error('Думата съдържа латинска буква(и)!!!');
+                    return false;
+                }
+
+                if (!this.syllable.match(/[0-9]/)) {
+                    this.$noty.error('Полето за брой срички трябва да съдържа само цифри!!!');
+                    return  false
+                }
+
+                return true;
+            },
+            addAnswer(word, points) {
+                this.playerAnswers.push({
+                    word: word,
+                    points: points
+                });
+
+                this.totalScore += points;
+            },
+            removeAnswer(index) {
+                let removed = this.playerAnswers.splice(index, 1);
+                this.totalScore -= removed[0].points;
+            },
+            playerError(errorName) {
+                this.addAnswer(errorName, 0);
+            },
+            languageTreasure() {
+                this.addAnswer('езиково съкровище', 200);
+            },
+            spelling() {
+                this.addAnswer('правопис', 200);
+            },
+            removePlayer(playerId) {
+                console.log(playerId);
             }
         }
     }
