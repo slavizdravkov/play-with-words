@@ -26,20 +26,41 @@
                     </div>
                 </div><!-- /.d-flex -->
 
-                <div class="d-flex">
-                    <div class="pr-1 flex-fill">
-                        <button type="button" class="btn btn-primary" @click="playerError('изтекло време')">Изтекло време</button>
+                <div class="d-flex mb-2">
+                    <div class="w-100 pr-2">
+                        <button type="button" class="btn btn-primary btn-block" @click="playerWrongAnswer('изтекло време')">Изтекло време</button>
                     </div>
-                    <div class="pr-1 flex-fill">
-                        <button type="button" class="btn btn-primary" @click="playerError('грешна дума')">Грешна дума</button>
+                    <div class="w-100 pl-2">
+                        <button type="button" class="btn btn-primary btn-block" @click="playerWrongAnswer('грешна дума')">Грешна дума</button>
                     </div>
-                    <div class="pr-1 flex-fill">
-                        <button type="button" class="btn btn-primary" @click="languageTreasure">Езиково съкровище</button>
+                </div>
+
+                <div class="d-flex mb-2">
+                    <div class="w-100 pr-2 d-flex">
+                        <div class="align-self-center w-100">
+                            Езиково съкровище
+                        </div>
+                        <div class="w-25">
+                            <button type="button" class="btn btn-link btn-sm pr-0 float-right" title="Правилен отговор" @click="playerCorrectAnswer('езиково съкровище')">
+                                <font-awesome-icon icon="check-circle" size="lg"></font-awesome-icon>
+                            </button>
+                            <button type="button" class="btn btn-link btn-sm pr-0 float-right" title="Грешен отговор" @click="playerWrongAnswer('езиково съкровище')">
+                                <font-awesome-icon icon="times-circle" size="lg"></font-awesome-icon>
+                            </button>
+                        </div>
                     </div>
-                    <div class="pr-1 flex-fill">
-                        <button type="button" class="btn btn-primary h-100" @click="spelling">Правопис</button>
+                    <div class="w-100 pl-2 d-flex">
+                        <div class="align-self-center w-100">Правопис</div>
+                        <div class="w-25">
+                            <button type="button" class="btn btn-link btn-sm pr-0 float-right" title="Правилен отговор" @click="playerCorrectAnswer('правопис')">
+                                <font-awesome-icon icon="check-circle" size="lg"></font-awesome-icon>
+                            </button>
+                            <button type="button" class="btn btn-link btn-sm pr-0 float-right" title="Грешен отговор" @click="playerWrongAnswer('правопис')">
+                                <font-awesome-icon icon="times-circle" size="lg"></font-awesome-icon>
+                            </button>
+                        </div>
                     </div>
-                </div><!-- /.d-flex -->
+                </div>
 
                 <table class="table table-bordered table-sm mt-2">
                     <thead class="thead-light">
@@ -145,14 +166,11 @@
                 let removed = this.playerAnswers.splice(index, 1);
                 this.totalScore -= removed[0].points;
             },
-            playerError(errorName) {
-                this.addAnswer(errorName, 0);
+            playerWrongAnswer(message) {
+                this.addAnswer(message, 0);
             },
-            languageTreasure() {
-                this.addAnswer('езиково съкровище', 200);
-            },
-            spelling() {
-                this.addAnswer('правопис', 200);
+            playerCorrectAnswer(message) {
+                this.addAnswer(message, 200);
             },
             removePlayer(playerId) {
                 console.log(playerId);
