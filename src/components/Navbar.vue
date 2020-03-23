@@ -8,7 +8,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <button class="btn btn-link nav-link">Нова игра</button>
+                    <button class="btn btn-link nav-link" @click="newGame" :disabled="disabled">Нова игра</button>
                 </li>
             </ul>
         </div>
@@ -17,7 +17,17 @@
 
 <script>
     export default {
-        name: "Navbar"
+        name: "Navbar",
+        computed: {
+            disabled() {
+                return this.$store.getters.players.length === 0
+            }
+        },
+        methods: {
+            newGame() {
+                this.$store.commit('newGame');
+            }
+        }
     }
 </script>
 

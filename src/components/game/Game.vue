@@ -71,11 +71,11 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="(playerAnswer, index) in playerAnswers" :key="index">
-                        <td>{{ playerAnswer.word }}</td>
-                        <td class="text-right">{{ playerAnswer.points }} точки</td>
+                    <tr v-for="(answer, index) in game.answers" :key="index">
+                        <td>{{ answer.word }}</td>
+                        <td class="text-right">{{ answer.points }} точки</td>
                         <td class="text-center">
-                            <button type="button" class="btn btn-link btn-sm" title="Изтрий" @click="removeAnswer(index)">
+                            <button type="button" class="btn btn-link btn-sm" title="Изтрий" @click="removeAnswer(player.id, index)">
                                 <font-awesome-icon icon="times"></font-awesome-icon>
                             </button>
                         </td>
@@ -84,7 +84,7 @@
                 </table>
             </div>
             <div class="card-footer border-primary">
-                <strong class="float-right">Общо: {{ totalScore }} точки</strong>
+                <strong class="float-right">Общо: {{ game.totalScore }} точки</strong>
             </div>
         </div>
     </div><!-- /.col-4 -->
@@ -94,21 +94,28 @@
     export default {
         name: "Game",
         props: ['player'],
+        computed: {
+            game() {
+                return this.$store.getters.getGameByPlayerId(this.player.id);
+            }
+        },
         data() {
             return {
-                playerAnswers: [],
                 word: '',
                 syllable: '',
-                totalScore: 0
             }
         },
         methods: {
             calc() {
                 if (this.hasValidData()) {
-                    this.addAnswer(this.word, this.calcPoints());
+                    this.$store.commit('addAnswer', {
+                        playerId: this.player.id,
+                        word: this.word,
+                        points: this.calcPoints()
+                    });
 
                     this.word = '';
-                    this.syllable = 0;
+                    this.syllable = '';
                 }
             },
             calcPoints() {
@@ -152,28 +159,37 @@
                     return  false
                 }
 
+                let playerId = this.$store.getters.getPlayerIdByWord(this.word);
+                if (playerId > 0) {
+                    let playerName = this.$store.getters.getPlayerNameById(playerId);
+                    this.$noty.error(`Думата е използвана от ${playerName}!!!`);
+                    return  false
+                }
+
                 return true;
             },
-            addAnswer(word, points) {
-                this.playerAnswers.push({
-                    word: word,
-                    points: points
+            removeAnswer(playerId, index) {
+                this.$store.commit('removeAnswer', {
+                    playerId,
+                    index
                 });
-
-                this.totalScore += points;
-            },
-            removeAnswer(index) {
-                let removed = this.playerAnswers.splice(index, 1);
-                this.totalScore -= removed[0].points;
             },
             playerWrongAnswer(message) {
-                this.addAnswer(message, 0);
+                this.$store.commit('addAnswer', {
+                    playerId: this.player.id,
+                    word: message,
+                    points: 0
+                });
             },
             playerCorrectAnswer(message) {
-                this.addAnswer(message, 200);
+                this.$store.commit('addAnswer', {
+                    playerId: this.player.id,
+                    word: message,
+                    points: 200
+                });
             },
             removePlayer(playerId) {
-                console.log(playerId);
+                this.$store.commit('removePlayer', playerId);
             }
         }
     }

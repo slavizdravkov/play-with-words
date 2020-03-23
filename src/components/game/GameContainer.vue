@@ -14,7 +14,7 @@
         </div><!-- /.row -->
         <hr>
         <div class="row ml-1 mr-1">
-            <game v-for="player in players" :player="player" :key="player.id"></game>
+            <game v-for="(player, playerId) in players" :player="player" :key="playerId"></game>
         </div>
     </div>
 </template>
@@ -27,20 +27,19 @@
         components: {
             Game
         },
+        computed: {
+            players() {
+                return this.$store.getters.players;
+            }
+        },
         data() {
             return {
-                players: [],
-                id: 1,
                 playerName: ''
             }
         },
         methods: {
             addPlayer() {
-                this.players.push({
-                    id: this.id,
-                    name: this.playerName
-                });
-                this.id++;
+                this.$store.commit('addPlayer', this.playerName);
                 this.playerName = '';
             }
         }
